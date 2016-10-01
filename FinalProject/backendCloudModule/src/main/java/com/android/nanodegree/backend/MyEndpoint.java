@@ -11,10 +11,19 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 
 import javax.inject.Named;
+
 import com.nanodegree.java.library.Joke;
 
 /**
  * An endpoint class we are exposing
+ *
+ * Notice the annotation @Api; this is where you set the configuration of the backend API, such as its name and version,
+ * along with other possible settings. (See Endpoint Annotations for all of the available attributes of this annotation.)
+ * <p/>
+ * This is where you specify the name and version of the API, both of which show up in the API Explorer
+ * <p/>
+ * Notice the @ApiMethod annotation; it allows you to configure your methods at a finer level than
+ * the API-wide configuration.
  */
 @Api(
         name = "myApi",
@@ -27,22 +36,6 @@ import com.nanodegree.java.library.Joke;
 )
 public class MyEndpoint {
 
-    /**
-     * A simple endpoint method that takes a name and says Hi back
-     */
-    @ApiMethod(name = "sayHi")
-    public MyBean sayHi(@Named("name") String name) {
-        MyBean response = new MyBean();
-        Joke joke = new Joke();
-        response.setData("Hi, "+joke.getJoke() + name);
-
-
-        return response;
-    }
-
-    /**
-     * A simple endpoint method that takes a name and says Hi back
-     */
     @ApiMethod(name = "getJoke")
     public MyBean getJoke(MyBean joke) {
         MyBean response = new MyBean();

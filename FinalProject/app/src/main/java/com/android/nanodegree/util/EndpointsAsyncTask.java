@@ -27,40 +27,34 @@ import java.io.IOException;
 
 import javax.xml.transform.Result;
 
-public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
-   // private static JokeApi jokeApi = null;
+/**
+ * The three generic arguments passed to  Asyntask are passed as data types
+ * to three methods of async task doInBackground(),progress () and onPostExecute
+ * The Middle arguments in the generics is used for progress status.
+ */
+public class EndpointsAsyncTask extends AsyncTask<JokeListener, Void, String> {
     private static MyApi myApi = null;
     private Context context;
+    private JokeListener jokeListener = null;
+    private final String HOST_NAME = "http://10.0.2.2:8080/_ah/api/";
 
-     public EndpointsAsyncTask(Context context){
-         this.context =context;
+     public EndpointsAsyncTask(){
+
      }
 
-/*
+    /**
+     * This method "arguments" and "retun type" completely depends on
+     * First and last arguments of the above syntax AsyncTask<JokeListener, Void, String>
+     * @param params
+     * @return
+     */
     @Override
-    protected String doInBackground(Pair<Context, String>... params) {
-        if (jokeApi == null) {
-            JokeApi.Builder builder = new JokeApi.Builder(AndroidHttp.newCompatibleTransport(),
-                    new AndroidJsonFactory(), null)
-                    .setRootUrl(context.getString(R.string.root_url_api));
-            jokeApi = builder.build();
-
-        }
-        try {
-            return jokeApi.putJoke(new MyBean()).execute().getJoke();
-        } catch (IOException e) {
-            return e.getMessage();
-        }
-    }
-*/
-
-    @Override
-    protected String doInBackground(Pair<Context, String>... params) {
+    protected String doInBackground(JokeListener... params) {
         if(myApi == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
                     //  10.0.2.2 is localhost's IP address in Android emulator
-                    .setRootUrl("http://10.0.2.2:8080/_ah/api/")
+                    .setRootUrl(HOST_NAME)
                     .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
                         @Override
                         public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
@@ -69,6 +63,7 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
                     });
 
             myApi = builder.build();
+            jokeListener = params[0];
         }
         try {
             return myApi.getJoke().execute().getJoke();
@@ -77,12 +72,16 @@ public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
         }
     }
 
-
+    /**
+     * Once we are done with the complete execution of this async task, this method will be called.
+     * the output of the above method "doInBackGround" will be passed as argument for this method.
+     * AsyncTask<JokeListener, Void, String>  , in this syntax, the last parameter should match
+     * the return type of "doInBackGround" and argument of onPostExecute()
+     *
+     * @param result
+     */
     @Override
     protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-        Intent androidLibraryIntent = new Intent(context, JokeDisplayAcitivity.class);
-        androidLibraryIntent.putExtra(Constants.JOKE_INTENT,result);
-        context.startActivity(androidLibraryIntent);
+        jokeListener.recieveJoke(result);
     }
 }

@@ -5,6 +5,14 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.androidlibrary.util.Constants;
 
+/**
+ * This is a library activity that can be used with any project that can refer to this.
+ * the kind of configuration we did for this is present in build.gradle as follows
+ *
+ *  compile project(':androidlibrary')  is configuration we can have in
+ *  app -- build.gradle.
+ *
+ */
 public class JokeDisplayAcitivity extends AppCompatActivity {
 
 

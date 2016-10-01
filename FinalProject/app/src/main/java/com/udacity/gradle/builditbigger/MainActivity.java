@@ -58,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
         */
 
 
-        new EndpointsAsyncTask(this).execute();
+       // new EndpointsAsyncTask(this).execute();
 
     }
 
